@@ -1,0 +1,40 @@
+import math
+import random
+import time
+
+import ec
+import primeq
+
+T = ec.elliptic_curve('Fuck', ['0', '0', '0', '0', '0', '0'], 16)
+try:
+    T.selftest()
+except ec.TestError as err:
+    print('Self-test failed: ' + err.msg)
+else:
+    print('Self-test OK')
+
+EC = ec.elliptic_curve("Test", ["8000000000000000000000000000000000000000000000000000000000000431",
+                    "8000000000000000000000000000000150FE8A1892976154C59CFC193ACCF5B3",
+                    "0000000000000000000000000000000000000000000000000000000000000007",
+                    "5FBFF498AA938CE739B8E022FBAFEF40563F6E6A3472FC2A514C0CE9DAE23B7E",
+                    "0000000000000000000000000000000000000000000000000000000000000002",
+                    "08E2A8A0E65147D4BD6316030E16D19C85C97F0A9CA267122B96ABBCEA7E8FC8"],
+                    16)
+
+skey = 55441196065363246126355624130324183196576709222340016572108097750006097525544L
+Q = EC.mul(skey, EC.P)
+print 'Public key =', Q
+# Q = 57520216126176808443631405...
+
+digest = 20798893674476452017134061561508270130637142515379653289952617252661468872421L
+rnd = 53854137677348463731403841147996619241504003434302020712960838528893196233395L
+
+#print 'R = ', EC.mul(rnd, EC.P)
+# R = 29700980915817952874371...
+
+signature = EC.sign(digest, rnd, skey)
+print 'Signature =',  signature
+print 'Verification:', EC.verify(digest, signature, Q)
+
+from primeq import primeq
+print primeq(2 ** 521 - 1)
