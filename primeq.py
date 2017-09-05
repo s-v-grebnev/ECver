@@ -20,7 +20,7 @@ def MR(c, k = 100):
     u = N - 1
     t = 0
     while u % 2 == 0:
-        u /= 2
+        u = u >> 1
         t += 1
     for cnt in range(k):
         a = random.randint(1, c - 1)

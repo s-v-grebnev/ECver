@@ -117,8 +117,8 @@ class MyWindow(QtGui.QMainWindow):
             params.append(str(self.ui.lineEdit_6.text()))
             EC = ec.elliptic_curve("Test", params, 16)
             log = EC.gosttest()
-        except(TypeError):
-            self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
+  #      except(TypeError):
+   #         self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
         except(ValueError):
             self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
 

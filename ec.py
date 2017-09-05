@@ -22,20 +22,20 @@ class elliptic_curve:
 
     def setparams(self, name = "No name", c = ['0', '0', '0', '0', '0', '0'], bs = 16):
         self.name = name
-        self.p = long(c[0], base=bs)
-        self.q = long(c[1], base=bs)
-        self.a = long(c[2], base=bs)
-        self.b = long(c[3], base=bs)
-        self.P = [long(c[4], base=bs), long(c[5], base=bs)]
+        self.p = int(c[0], base=bs)
+        self.q = int(c[1], base=bs)
+        self.a = int(c[2], base=bs)
+        self.b = int(c[3], base=bs)
+        self.P = [int(c[4], base=bs), int(c[5], base=bs)]
 
     def __init__(self, name = "No name", c = ['0', '0', '0', '0', '0', '0'], bs = 16):
 
         self.name = name
-        self.p = long(c[0], base = bs)
-        self.q = long(c[1], base = bs)
-        self.a = long(c[2], base = bs)
-        self.b = long(c[3], base = bs)
-        self.P = [long(c[4], base = bs), long(c[5], base = bs)]
+        self.p = int(c[0], base = bs)
+        self.q = int(c[1], base = bs)
+        self.a = int(c[2], base = bs)
+        self.b = int(c[3], base = bs)
+        self.P = [int(c[4], base = bs), int(c[5], base = bs)]
 
     def iszero(self, P):
         return (P == [0, 0])
@@ -62,7 +62,7 @@ class elliptic_curve:
             if k % 2 == 1:
                 Y = self.add(Y, Z)
             Z = self.add(Z, Z)
-            k /= 2
+            k = k >> 1
         return Y
 
     def pkey_from_skey(self, skey):
@@ -99,18 +99,18 @@ class elliptic_curve:
                     "0000000000000000000000000000000000000000000000000000000000000002",
                     "08E2A8A0E65147D4BD6316030E16D19C85C97F0A9CA267122B96ABBCEA7E8FC8"],
                     16)
-        skey = 55441196065363246126355624130324183196576709222340016572108097750006097525544L
+        skey = 55441196065363246126355624130324183196576709222340016572108097750006097525544
         Q = self.mul(skey, self.P)
-        if not Q == [long("7F2B49E270DB6D90D8595BEC458B50C58585BA1D4E9B788F6689DBD8E56FD80B", base = 16),
-                            long("26F1B489D6701DD185C8413A977B3CBBAF64D1C593D26627DFFB101A87FF77DA", base = 16)]:
+        if not Q == [int("7F2B49E270DB6D90D8595BEC458B50C58585BA1D4E9B788F6689DBD8E56FD80B", base = 16),
+                            int("26F1B489D6701DD185C8413A977B3CBBAF64D1C593D26627DFFB101A87FF77DA", base = 16)]:
             raise TestError('Public key generation failed')
-        digest = long("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base = 16)
+        digest = int("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base = 16)
 #            20798893674476452017134061561508270130637142515379653289952617252661468872421L
-        rnd = long( "77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base = 16)
+        rnd = int( "77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base = 16)
 #            53854137677348463731403841147996619241504003434302020712960838528893196233395L
         signature = self.sign(digest, rnd, skey)
-        if not signature == [long("41AA28D2F1AB148280CD9ED56FEDA41974053554A42767B83AD043FD39DC0493", base = 16),
-                            long("1456C64BA4642A1653C235A98A60249BCD6D3F746B631DF928014F6C5BF9C40", base = 16)]:
+        if not signature == [int("41AA28D2F1AB148280CD9ED56FEDA41974053554A42767B83AD043FD39DC0493", base = 16),
+                            int("1456C64BA4642A1653C235A98A60249BCD6D3F746B631DF928014F6C5BF9C40", base = 16)]:
             raise TestError('Signature generation failed')
         if not self.verify(digest, signature, Q):
             raise TestError('Signature verification failed')
@@ -175,22 +175,22 @@ class elliptic_curve:
         else:
             log.append('MOV degree test passed for t = ' + str(cnt))
         if not (self.P[1] ** 2 - self.P[0] ** 3 - self.a * self.P[0] - self.b) %  self.p == 0:
-            log.append('Point P does not belong to curve')
+            log.append('Point P does not belong to the curve')
             fail = True
         else:
-            log.append('Point P belongs to curve')
+            log.append('Point P belongs to the curve')
         if self.iszero(self.mul(self.q, self.P)) == True:
             log.append('Point P is of order Q')
         else:
             log.append('Point P is NOT of order Q')
             fail = True
-        skey_256 = 55441196065363246126355624130324183196576709222340016572108097750006097525544L
-        digest_256 = long("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base=16)
-        rnd_256 = long("77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base=16)
+        skey_256 = 55441196065363246126355624130324183196576709222340016572108097750006097525544
+        digest_256 = int("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base=16)
+        rnd_256 = int("77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base=16)
 
-        skey_512 = long("BA6048AADAE241BA40936D47756D7C93091A0E8514669700EE7508E508B102072E8123B2200A0563322DAD2827E2714A2636B7BFD18AADFC62967821FA18DD4", base=16)
-        digest_512 = long("754F3CFACC9E0615C4F4A7C4D8DAB531B09B6F9C170C533A71D147035B0C5917184EE536593F4414339976C647C5D5A407ADEDB1D560C4FC6777D2972075B8C", base=16)
-        rnd_512 = long("59E7F4B1410FEACC570456C6801496946312120B39D019D455986E364F365886748ED7A44B3E794434006011842286212273A6D14CF70EA3AF71BB1AE679F1", base=16)
+        skey_512 = int("BA6048AADAE241BA40936D47756D7C93091A0E8514669700EE7508E508B102072E8123B2200A0563322DAD2827E2714A2636B7BFD18AADFC62967821FA18DD4", base=16)
+        digest_512 = int("754F3CFACC9E0615C4F4A7C4D8DAB531B09B6F9C170C533A71D147035B0C5917184EE536593F4414339976C647C5D5A407ADEDB1D560C4FC6777D2972075B8C", base=16)
+        rnd_512 = int("59E7F4B1410FEACC570456C6801496946312120B39D019D455986E364F365886748ED7A44B3E794434006011842286212273A6D14CF70EA3AF71BB1AE679F1", base=16)
 
         if self.q < 2 ** 256:
             skey, digest, rnd = skey_256, digest_256, rnd_256
@@ -247,7 +247,7 @@ class elliptic_curve:
             if not str.upper().find('Y=') == -1:
                 tmp = str.upper().split('=')
                 params[5] = tmp[1].lstrip(' ').rstrip(' \n')
-        print params
+ #       print (params)
         try:
             self.setparams(filename, params, 16)
         except(TypeError):
