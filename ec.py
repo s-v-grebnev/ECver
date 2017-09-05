@@ -1,4 +1,5 @@
 from gcd import *
+from primeq import *
 
 class TestError(Exception):
     def __init__(self, value):
@@ -17,7 +18,7 @@ class elliptic_curve:
     name = "No name"
 
     def getparams(self):
-        return((p, q, a, b, [px, py]))
+        return((self.p, self.q, self.a, self.b, self.P))
 
     def setparams(self, name = "No name", c = ['0', '0', '0', '0', '0', '0'], bs = 16):
         self.name = name
@@ -114,3 +115,143 @@ class elliptic_curve:
         if not self.verify(digest, signature, Q):
             raise TestError('Signature verification failed')
         return True
+
+    def gosttest(self):
+        log = []
+        fail = False
+        if 2 ** 254 < self.q < 2 ** 256:
+            interval = 'GOST R 34.10-2001'
+        elif 2 ** 508 < self.q < 2 ** 512:
+            interval = 'GOST R 34.10-2012'
+        else:
+            interval = 'Q is out of bounds'
+            fail = True
+        log.append('Q fits into ' + interval)
+        if not primeq(self.p) == True:
+            log.append('Fatal: P is composite')
+            fail = True
+        else:
+            log.append('P is (probably) prime')
+        if not primeq(self.q) == True:
+            log.append('Fatal: Q is composite')
+            fail = True
+        else:
+            log.append('Q is (probably) prime')
+        if self.a %  self.p == 0:
+            log.append('A == 0')
+            fail = True
+        else:
+            log.append('A != 0')
+        if self.b % self.p == 0:
+            log.append('B == 0')
+            fail = True
+        else:
+            log.append('B != 0')
+        if self.p == self.q:
+            log.append('P == Q')
+            fail = True
+        else:
+            log.append('P != Q')
+        j = (1728 * 4 * pow(self.a, 3, self.p) * modinv(4 *  self.a ** 3 + 27 * self. b ** 2, self.p)) % self.p
+        if j == 0 or j == 1728:
+            log.append('j(E) failed: j(E) = ' + hex(j).lstrip('0x').rstrip('L').upper())
+            fail = True
+        else:
+            log.append('j(E) passed: j(E) = ' + hex(j).lstrip('0x').rstrip('L').upper())
+        if  2 ** 254 < self.q < 2 ** 256:
+            cnt = 31
+        else:
+            cnt = 131
+        mov = self.p
+        movfailed = False
+        for i in range(cnt):
+            if(mov % self.q == 1):
+                mov *= self.p
+                fail = True
+                movfailed = True
+                break
+        if movfailed:
+            log.append('MOV degree test failed')
+        else:
+            log.append('MOV degree test passed for t = ' + str(cnt))
+        if not (self.P[1] ** 2 - self.P[0] ** 3 - self.a * self.P[0] - self.b) %  self.p == 0:
+            log.append('Point P does not belong to curve')
+            fail = True
+        else:
+            log.append('Point P belongs to curve')
+        if self.iszero(self.mul(self.q, self.P)) == True:
+            log.append('Point P is of order Q')
+        else:
+            log.append('Point P is NOT of order Q')
+            fail = True
+        skey_256 = 55441196065363246126355624130324183196576709222340016572108097750006097525544L
+        digest_256 = long("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base=16)
+        rnd_256 = long("77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base=16)
+
+        skey_512 = long("BA6048AADAE241BA40936D47756D7C93091A0E8514669700EE7508E508B102072E8123B2200A0563322DAD2827E2714A2636B7BFD18AADFC62967821FA18DD4", base=16)
+        digest_512 = long("754F3CFACC9E0615C4F4A7C4D8DAB531B09B6F9C170C533A71D147035B0C5917184EE536593F4414339976C647C5D5A407ADEDB1D560C4FC6777D2972075B8C", base=16)
+        rnd_512 = long("59E7F4B1410FEACC570456C6801496946312120B39D019D455986E364F365886748ED7A44B3E794434006011842286212273A6D14CF70EA3AF71BB1AE679F1", base=16)
+
+        if self.q < 2 ** 256:
+            skey, digest, rnd = skey_256, digest_256, rnd_256
+        else:
+            skey, digest, rnd = skey_512, digest_512, rnd_512
+
+        Q = self.mul(skey, self.P)
+
+        signature = self.sign(digest, rnd, skey)
+        if not self.verify(digest, signature, Q):
+            log.append('Test signature generation/verification failed')
+            fail = True
+        else:
+            log.append('Test signature generation/verification passed')
+        log.append('----' * 8)
+        log.append('Test example:')
+        log.append('d = ' + hex(skey).lstrip('0x').rstrip('L').upper())
+        log.append('Q = (' + hex(Q[0]).lstrip('0x').rstrip('L').upper() + ', ' +
+                                                                    hex(Q[1]).lstrip('0x').rstrip('L').upper() + ')')
+        log.append('e = ' + hex(digest).lstrip('0x').rstrip('L').upper())
+        log.append('k = ' + hex(rnd).lstrip('0x').rstrip('L').upper())
+        log.append('Signature = (' + hex(signature[0]).lstrip('0x').rstrip('L').upper() + ', ' +
+                                                      hex(signature[1]).lstrip('0x').rstrip('L').upper()  + ')')
+        log.append('----' * 8)
+        if fail == True:
+            log.append('GOST R 34.10-2012 verification failed')
+        else:
+            log.append('GOST R 34.10-2012 verification passed')
+        return log
+
+    def loadfromfile(self, filename):
+        with open(filename, "r") as fh:
+            data = fh.readlines()
+
+        patterns = ['P=', 'Q=', 'A=', 'B=', 'PX=', 'PY=']
+        params = [None] * 6
+        print (data)
+        for str in data:
+            if not str.upper().find('P=') == -1:
+                tmp = str.split('=')
+                params[0] = tmp[1].lstrip(' ').rstrip(' \n')
+            if not str.upper().find('Q=') == -1:
+                tmp = str.split('=')
+                params[1] = tmp[1].lstrip(' ').rstrip(' \n')
+            if not str.upper().find('A=') == -1:
+                tmp = str.split('=')
+                params[2] = tmp[1].lstrip(' ').rstrip(' \n')
+            if not str.upper().find('B=') == -1:
+                tmp = str.split('=')
+                params[3] = tmp[1].lstrip(' ').rstrip(' \n')
+            if not str.upper().find('X=') == -1:
+                tmp = str.split('=')
+                params[4] = tmp[1].lstrip(' ').rstrip(' \n')
+            if not str.upper().find('Y=') == -1:
+                tmp = str.upper().split('=')
+                params[5] = tmp[1].lstrip(' ').rstrip(' \n')
+        print params
+        try:
+            self.setparams(filename, params, 16)
+        except(TypeError):
+            pass
+        except(ValueError):
+            pass
+

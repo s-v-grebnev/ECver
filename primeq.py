@@ -14,7 +14,7 @@ def buildsmallprimes(c):
             primes.append(i)
     return primes
 
-def MR(c, k = 256):
+def MR(c, k = 100):
     random.seed(time.time())
     N = c
     u = N - 1
@@ -31,10 +31,10 @@ def MR(c, k = 256):
             continue
         flg = False
         for i in range(t):
-            if a == N - 1:
+            if a % N == N - 1:
                 flg = True
                 continue
-            a = a ** 2
+            a = a ** 2 % N
         if flg == True:
             continue
         else:
@@ -50,4 +50,4 @@ def primeq(c):
         else:
             if c %i == 0:
                 return False
-    return MR(c, 256)
+    return MR(c, 100)
