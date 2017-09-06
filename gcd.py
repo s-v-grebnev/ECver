@@ -1,3 +1,6 @@
+""" GCD, Extended GCD and Modular inversion implementation
+"""
+
 def gcd(a,b):
     while not b == 0:
         r = a % b
@@ -28,6 +31,7 @@ def egcd(a, b):
 def modinv(a, m):
     d, u, v = egcd(a %m, m)
     if d != 1:
-        raise ValueError('Modular inverse does not exist for' + str(a) + ' mod ' + str(m) )
+        raise ValueError('Modular inverse does not exist for ' + hex(a).lstrip('0x')[:10] + '... mod ' +
+                         hex(m).lstrip('0x')[:10] + '...')
     else:
         return u % m

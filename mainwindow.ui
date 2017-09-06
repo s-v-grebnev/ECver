@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>816</width>
+    <width>900</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>The Mighty EC Verifier</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>20</y>
-      <width>751</width>
+      <x>40</x>
+      <y>10</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -27,9 +27,9 @@
    <widget class="QLineEdit" name="lineEdit_2">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>60</y>
-      <width>751</width>
+      <x>40</x>
+      <y>40</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -37,9 +37,9 @@
    <widget class="QLineEdit" name="lineEdit_3">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>100</y>
-      <width>751</width>
+      <x>40</x>
+      <y>70</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -47,9 +47,9 @@
    <widget class="QLineEdit" name="lineEdit_4">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>140</y>
-      <width>751</width>
+      <x>40</x>
+      <y>100</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -57,9 +57,9 @@
    <widget class="QLineEdit" name="lineEdit_5">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>180</y>
-      <width>751</width>
+      <x>40</x>
+      <y>130</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -67,9 +67,9 @@
    <widget class="QLineEdit" name="lineEdit_6">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>220</y>
-      <width>751</width>
+      <x>40</x>
+      <y>160</y>
+      <width>841</width>
       <height>22</height>
      </rect>
     </property>
@@ -77,43 +77,65 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>260</y>
+      <x>410</x>
+      <y>190</y>
       <width>80</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Check!</string>
+     <string>&amp;Check!</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>20</y>
-      <width>31</width>
+      <y>10</y>
+      <width>21</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>P=</string>
+     <string>&amp;P=</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit</cstring>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>40</y>
       <width>21</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Q=</string>
+     <string>&amp;Q=</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_2</cstring>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>21</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;A=</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_3</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -123,55 +145,54 @@
      </rect>
     </property>
     <property name="text">
-     <string>A=</string>
+     <string>&amp;B=</string>
     </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>21</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>B=</string>
+    <property name="buddy">
+     <cstring>lineEdit_4</cstring>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>180</y>
+      <y>130</y>
       <width>21</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>X=</string>
+     <string>&amp;X=</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_5</cstring>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>220</y>
+      <y>160</y>
       <width>21</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Y=</string>
+     <string>&amp;Y=</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_6</cstring>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="plainTextEdit">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>300</y>
-      <width>781</width>
-      <height>241</height>
+      <y>220</y>
+      <width>861</width>
+      <height>341</height>
      </rect>
     </property>
    </widget>
@@ -190,7 +211,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>816</width>
+     <width>900</width>
      <height>19</height>
     </rect>
    </property>
@@ -201,6 +222,8 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
+    <addaction name="actionCheck"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuTest">
@@ -209,6 +232,8 @@
     </property>
     <addaction name="actionLoad_Test_256"/>
     <addaction name="actionLoad_Test_512"/>
+    <addaction name="action_Run_self_test"/>
+    <addaction name="actionRun_Atkin"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -221,7 +246,7 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="actionClear_2"/>
-    <addaction name="actionCheck"/>
+    <addaction name="actionClear_output"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -260,7 +285,7 @@
   </action>
   <action name="actionClear_2">
    <property name="text">
-    <string>C&amp;lear</string>
+    <string>C&amp;lear input</string>
    </property>
   </action>
   <action name="actionHelp">
@@ -271,6 +296,31 @@
   <action name="actionCheck">
    <property name="text">
     <string>&amp;Check</string>
+   </property>
+  </action>
+  <action name="actionCop_y_Log">
+   <property name="text">
+    <string>Cop&amp;y Log</string>
+   </property>
+  </action>
+  <action name="actionCopy_Cu_rve">
+   <property name="text">
+    <string>Copy Cu&amp;rve</string>
+   </property>
+  </action>
+  <action name="actionClear_output">
+   <property name="text">
+    <string>Clear &amp;output</string>
+   </property>
+  </action>
+  <action name="action_Run_self_test">
+   <property name="text">
+    <string>&amp;Run self-test</string>
+   </property>
+  </action>
+  <action name="actionRun_Atkin">
+   <property name="text">
+    <string>Run &amp;Atkin for p,q</string>
    </property>
   </action>
  </widget>

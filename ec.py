@@ -1,3 +1,9 @@
+""" GOST R 34.10-20** digital signature implementation
+
+This module implements Weierstrass elliptic curves (class elliptic_curve)
+and GOST R 34.10-20** digital signature: generation, verification, test
+"""
+
 from gcd import *
 from primeq import *
 
@@ -184,7 +190,8 @@ class elliptic_curve:
         else:
             log.append('Point P is NOT of order Q')
             fail = True
-        skey_256 = 55441196065363246126355624130324183196576709222340016572108097750006097525544
+# Test data from GOST
+        skey_256 = int("55441196065363246126355624130324183196576709222340016572108097750006097525544", base = 10)
         digest_256 = int("2DFBC1B372D89A1188C09C52E0EEC61FCE52032AB1022E8E67ECE6672B043EE5", base=16)
         rnd_256 = int("77105C9B20BCD3122823C8CF6FCC7B956DE33814E95B7FE64FED924594DCEAB3", base=16)
 
@@ -219,15 +226,17 @@ class elliptic_curve:
             log.append('GOST R 34.10-2012 verification failed')
         else:
             log.append('GOST R 34.10-2012 verification passed')
-        return log
+        return not fail, log
 
     def loadfromfile(self, filename):
-        with open(filename, "r") as fh:
-            data = fh.readlines()
-
-        patterns = ['P=', 'Q=', 'A=', 'B=', 'PX=', 'PY=']
+        try:
+            with open(filename, "r") as fh:
+                data = fh.readlines()
+        except:
+            return []
+#        patterns = ['P=', 'Q=', 'A=', 'B=', 'PX=', 'PY=']
         params = [None] * 6
-        print (data)
+#        print (data)
         for str in data:
             if not str.upper().find('P=') == -1:
                 tmp = str.split('=')
@@ -251,7 +260,7 @@ class elliptic_curve:
         try:
             self.setparams(filename, params, 16)
         except(TypeError):
-            pass
+            print("Invalid data")
         except(ValueError):
-            pass
+            print("Invalid data")
 

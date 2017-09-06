@@ -1,3 +1,6 @@
+""" Trial division and Miller-Rabin probable primality test
+"""
+
 import random
 import time
 from gcd import gcd
