@@ -1,14 +1,17 @@
 """ GOST R 34.10-20** verification
 
-This program implements verification of GOST R 34.10-2012 parameters (elliptic curves)
+This program implements verification of GOST R 34.10-2012 digital signature
+scheme parameters, that is, elliptic curves
 """
 
 import math
 import random
 import time
 import os
-import ec
-import primeq
+from ecverutil import ec as ec
+from PyQt4 import QtCore, QtGui
+import sys
+import mainwindow
 
 T = ec.elliptic_curve('Fuck', ['0', '0', '0', '0', '0', '0'], 16)
 try:
@@ -44,10 +47,6 @@ EC = ec.elliptic_curve("Test", ["80000000000000000000000000000000000000000000000
 #from primeq import primeq
 #print primeq(2 ** 521 - 1)
 
-
-from PyQt4 import QtCore, QtGui
-import sys
-import mainwindow
 
 class MyWindow(QtGui.QMainWindow):
     AtkinPath=''
