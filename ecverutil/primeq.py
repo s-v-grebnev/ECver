@@ -3,7 +3,7 @@
 
 import random
 import time
-from gcd import gcd
+from ecverutil.gcd import gcd
 
 def buildsmallprimes(c):
     sprimes = [True] * c

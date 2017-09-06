@@ -4,8 +4,8 @@ This module implements Weierstrass elliptic curves (class elliptic_curve)
 and GOST R 34.10-20** digital signature: generation, verification, test
 """
 
-from gcd import *
-from primeq import *
+from ecverutil.gcd import *
+from ecverutil.primeq import *
 
 class TestError(Exception):
     def __init__(self, value):
