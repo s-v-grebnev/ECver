@@ -16,7 +16,7 @@ class TestError(Exception):
 
 def FormatInt(j, base = 16):
     if base == 16:
-        return hex(j).lstrip('0x').upper()
+        return hex(j).lstrip('0x').upper().rstrip('L')
     else:
         return str(j)
 
