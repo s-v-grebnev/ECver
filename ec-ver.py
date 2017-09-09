@@ -114,7 +114,7 @@ class MyWindow(QtGui.QMainWindow):
             params.append(str(self.ui.lineEdit_5.text()))
             params.append(str(self.ui.lineEdit_6.text()))
             EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, 16)
-            flag, log = EC.gosttest()
+            flag, log = EC.gosttest(opts.GetOption('OutputBase'))
         except(TypeError) as err:
             QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
             self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
