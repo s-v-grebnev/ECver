@@ -10,9 +10,26 @@ import sys
 import mainwindow
 import options, optdialog
 import os
+import subprocess as sp
 
 if __name__ == "__main__":
     opts = options.Options()
+
+def AtkinTest(p, q, AtkinPath):
+    with sp.Popen([AtkinPath], stdin=sp.PIPE) as fp:
+        #                fp.communicate(str(int(self.ui.lineEdit.text(), base = 16))+'\n')
+        text = p
+        text = format('%s' % text)
+        text = str(int(text, base=16)) + '\n'
+        fp.communicate(bytes(text, 'UTF-8'))
+        p_res = fp.returncode
+    with sp.Popen([AtkinPath], stdin=sp.PIPE) as fp:
+        text = q
+        text = format('%s' % text)
+        text = str(int(text, base=16)) + '\n'
+        fp.communicate(bytes(text, 'UTF-8'))
+        q_res = fp.returncode
+        return (p_res, q_res)
 
 class SuperUi_Options(optdialog.Ui_Options):
     def GetAtkinName(self):
@@ -139,27 +156,14 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.lineEdit_6.setText(hex(params[4][1]).lstrip('0x').rstrip('L'))
 
     def Atkin(self):
-        import subprocess as sp
         AtkinPath=''
         if opts.GetOption('AtkinPath') == '':
             AtkinPath = QtGui.QFileDialog.getOpenFileName(caption = "Path to Atkin")
         else:
             AtkinPath = opts.GetOption('AtkinPath')
 #        print(AtkinPath)
-        with sp.Popen([AtkinPath], stdin = sp.PIPE) as fp:
-#                fp.communicate(str(int(self.ui.lineEdit.text(), base = 16))+'\n')
-            text = self.ui.lineEdit.text()
-            text = format('%s' % text)
-            text = str(int(text, base = 16))+'\n'
-            fp.communicate(bytes(text, 'UTF-8'))
-            p_res = fp.returncode
-        with sp.Popen([AtkinPath], stdin = sp.PIPE) as fp:
-            text = self.ui.lineEdit_2.text()
-            text = format('%s' % text)
-            text = str(int(text, base = 16))+'\n'
-            fp.communicate(bytes(text, 'UTF-8'))
-            q_res = fp.returncode
 
+        p_res, q_res = AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
         if p_res == 0 and q_res == 0:
             QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P, Q are proven primes")
         elif p_res == 2 or q_res == 2:
