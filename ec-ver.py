@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """ GOST R 34.10-20** verification
 
 This program implements verification of GOST R 34.10-2012 digital signature
@@ -55,6 +56,9 @@ class MyWindow(QtGui.QMainWindow):
         self.connect(self.ui.action_Run_self_test, QtCore.SIGNAL("triggered()"), self.SelfTest)
         self.connect(self.ui.actionRun_Atkin, QtCore.SIGNAL("triggered()"), self.Atkin)
         self.connect(self.ui.action_Options, QtCore.SIGNAL("triggered()"), self.OptionsDialog)
+#        self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged()"), self.SetInputBase)
+### XXX!
+        self.ui.checkBox.stateChanged.connect(self.SetInputBase)
 
 #    @QtCore.pyqtSlot()
 
@@ -122,7 +126,7 @@ class MyWindow(QtGui.QMainWindow):
         params = []
         log = []
         flag = False
-        number = str(int(str(self.ui.lineEdit.text()), base = 16))
+      #  number = str(int(str(self.ui.lineEdit.text()), base = 16))
         try:
             params.append(str(self.ui.lineEdit.text()))
             params.append(str(self.ui.lineEdit_2.text()))
@@ -130,7 +134,7 @@ class MyWindow(QtGui.QMainWindow):
             params.append(str(self.ui.lineEdit_4.text()))
             params.append(str(self.ui.lineEdit_5.text()))
             params.append(str(self.ui.lineEdit_6.text()))
-            EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, 16)
+            EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, opts.GetOption('InputBase'))
             flag, log = EC.gosttest(opts.GetOption('OutputBase'))
         except(TypeError) as err:
             QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
@@ -204,6 +208,11 @@ class MyWindow(QtGui.QMainWindow):
             except:
                 print('Failed to save options')
 
+    def SetInputBase(self):
+        if self.ui.checkBox.isChecked():
+            opts.SetOption('InputBase', 16)
+        else:
+            opts.SetOption('InputBase', 10)
 
 
 if __name__ == "__main__":

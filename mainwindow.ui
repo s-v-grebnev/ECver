@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>250</y>
+      <x>400</x>
+      <y>240</y>
       <width>80</width>
       <height>21</height>
      </rect>
@@ -37,9 +37,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>280</y>
+      <y>270</y>
       <width>861</width>
-      <height>341</height>
+      <height>351</height>
      </rect>
     </property>
    </widget>
@@ -47,9 +47,9 @@
     <property name="geometry">
      <rect>
       <x>9</x>
-      <y>19</y>
+      <y>-1</y>
       <width>881</width>
-      <height>221</height>
+      <height>231</height>
      </rect>
     </property>
     <property name="focusPolicy">
@@ -67,7 +67,7 @@
        <x>10</x>
        <y>10</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -83,7 +83,7 @@
        <x>10</x>
        <y>160</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -99,7 +99,7 @@
        <x>10</x>
        <y>130</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -115,7 +115,7 @@
        <x>10</x>
        <y>70</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -131,7 +131,7 @@
        <x>10</x>
        <y>40</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -204,9 +204,9 @@
     <widget class="QLineEdit" name="lineEdit_7">
      <property name="geometry">
       <rect>
-       <x>60</x>
+       <x>170</x>
        <y>190</y>
-       <width>811</width>
+       <width>701</width>
        <height>22</height>
       </rect>
      </property>
@@ -217,7 +217,7 @@
        <x>10</x>
        <y>100</y>
        <width>21</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -230,14 +230,30 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>120</x>
        <y>190</y>
-       <width>55</width>
-       <height>14</height>
+       <width>51</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Name=</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>85</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hex</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -257,7 +273,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>19</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -316,12 +332,12 @@
   </action>
   <action name="actionLoad_Test_256">
    <property name="text">
-    <string>Load Test-256</string>
+    <string>&amp;Load Test-256</string>
    </property>
   </action>
   <action name="actionLoad_Test_512">
    <property name="text">
-    <string>Load Test-512</string>
+    <string>Load &amp;Test-512</string>
    </property>
   </action>
   <action name="actionClear">
@@ -336,7 +352,7 @@
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>Help</string>
+    <string>&amp;Help</string>
    </property>
   </action>
   <action name="actionCheck">

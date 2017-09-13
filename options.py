@@ -4,7 +4,7 @@ class Options(object):
     opts = {}
     def __init__(self):
         self.opts = {'UseAtkin':False, 'AtkinPath':'./atkin64',
-                     'OutputBase':16, 'MRIterations':128}
+                     'InputBase':16,'OutputBase':16, 'MRIterations':128}
 
     def SetOption(self, key, value):
         self.opts[key] = value
