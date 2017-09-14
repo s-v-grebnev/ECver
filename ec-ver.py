@@ -11,26 +11,10 @@ import sys
 import mainwindow
 import options, optdialog
 import os
-import subprocess as sp
+from ecver import atkin_pro as atkin
 
 if __name__ == "__main__":
     opts = options.Options()
-
-def AtkinTest(p, q, AtkinPath):
-    with sp.Popen([AtkinPath], stdin=sp.PIPE) as fp:
-        #                fp.communicate(str(int(self.ui.lineEdit.text(), base = 16))+'\n')
-        text = p
-        text = format('%s' % text)
-        text = str(int(text, base=16)) + '\n'
-        fp.communicate(bytes(text, 'UTF-8'))
-        p_res = fp.returncode
-    with sp.Popen([AtkinPath], stdin=sp.PIPE) as fp:
-        text = q
-        text = format('%s' % text)
-        text = str(int(text, base=16)) + '\n'
-        fp.communicate(bytes(text, 'UTF-8'))
-        q_res = fp.returncode
-        return (p_res, q_res)
 
 class SuperUi_Options(optdialog.Ui_Options):
     def GetAtkinName(self):
@@ -44,18 +28,33 @@ class MyWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = mainwindow.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.connect(self.ui.pushButton, QtCore.SIGNAL("clicked()"), self.on_clicked_check)
-        self.connect(self.ui.actionLoad_Test_256, QtCore.SIGNAL("triggered()"), self.FillTest256)
-        self.connect(self.ui.actionLoad_Test_512, QtCore.SIGNAL("triggered()"), self.FillTest512)
-        self.connect(self.ui.actionClear_2, QtCore.SIGNAL("triggered()"), self.onClickedClear)
-        self.connect(self.ui.actionClear_output, QtCore.SIGNAL("triggered()"), self.onClickedClear_output)
-        self.connect(self.ui.actionCheck, QtCore.SIGNAL("triggered()"), self.on_clicked_check)
-        self.connect(self.ui.actionQuit,   QtCore.SIGNAL("triggered()"), app.quit)
-        self.connect(self.ui.actionOpen,   QtCore.SIGNAL("triggered()"), self.LoadFile)
-        self.connect(self.ui.actionSave,   QtCore.SIGNAL("triggered()"), self.SaveFile)
-        self.connect(self.ui.action_Run_self_test, QtCore.SIGNAL("triggered()"), self.SelfTest)
-        self.connect(self.ui.actionRun_Atkin, QtCore.SIGNAL("triggered()"), self.Atkin)
-        self.connect(self.ui.action_Options, QtCore.SIGNAL("triggered()"), self.OptionsDialog)
+        self.ui.pushButton.clicked.connect(self.CheckEC)
+        self.ui.actionLoad_Test_256.triggered.connect(self.FillTest256)
+        self.ui.actionLoad_Test_512.triggered.connect(self.FillTest512)
+        self.ui.actionClear_2.triggered.connect(self.ClickedClear)
+        self.ui.actionClear_output.triggered.connect(self.ClickedClearOutput)
+        self.ui.actionCheck.triggered.connect(self.CheckEC)
+        self.ui.actionQuit.triggered.connect(app.quit)
+        self.ui.actionOpen.triggered.connect(self.LoadFile)
+        self.ui.actionSave.triggered.connect(self.SaveFile)
+        self.ui.action_Run_self_test.triggered.connect(self.SelfTest)
+        self.ui.actionRun_Atkin.triggered.connect(self.Atkin)
+        self.ui.action_Options.triggered.connect(self.OptionsDialog)
+        self.ui.checkBox.stateChanged.connect(self.SetInputBase)
+        self.ui.checkBox.stateChanged.connect(self.SetInputBase)
+
+        #        self.connect(self.ui.pushButton, QtCore.SIGNAL("clicked()"), self.CheckEC)
+#        self.connect(self.ui.actionLoad_Test_256, QtCore.SIGNAL("triggered()"), self.FillTest256)
+#        self.connect(self.ui.actionLoad_Test_512, QtCore.SIGNAL("triggered()"), self.FillTest512)
+#        self.connect(self.ui.actionClear_2, QtCore.SIGNAL("triggered()"), self.ClickedClear)
+#        self.connect(self.ui.actionClear_output, QtCore.SIGNAL("triggered()"), self.ClickedClearOutput)
+#        self.connect(self.ui.actionCheck, QtCore.SIGNAL("triggered()"), self.CheckEC)
+#        self.connect(self.ui.actionQuit,   QtCore.SIGNAL("triggered()"), app.quit)
+#        self.connect(self.ui.actionOpen,   QtCore.SIGNAL("triggered()"), self.LoadFile)
+#        self.connect(self.ui.actionSave,   QtCore.SIGNAL("triggered()"), self.SaveFile)
+#        self.connect(self.ui.action_Run_self_test, QtCore.SIGNAL("triggered()"), self.SelfTest)
+#        self.connect(self.ui.actionRun_Atkin, QtCore.SIGNAL("triggered()"), self.Atkin)
+#        self.connect(self.ui.action_Options, QtCore.SIGNAL("triggered()"), self.OptionsDialog)
 #        self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged()"), self.SetInputBase)
 ### XXX!
         self.ui.checkBox.stateChanged.connect(self.SetInputBase)
@@ -80,10 +79,10 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.lineEdit_6.setText(str("7503CFE87A836AE3A61B8816E25450E6CE5E1C93ACF1ABC1778064FDCBEFA921DF1626BE4FD036E93D75E6A50E3A41E98028FE5FC235F5B889A589CB5215F2A4"))
         self.ui.lineEdit_7.setText(str("GOSTR34102012-Test"))
 
-    def onClickedClear_output(self):
+    def ClickedClearOutput(self):
         self.ui.plainTextEdit.clear()
 
-    def onClickedClear(self):
+    def ClickedClear(self):
         self.ui.lineEdit.clear()
         self.ui.lineEdit_2.clear()
         self.ui.lineEdit_3.clear()
@@ -122,7 +121,7 @@ class MyWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error writing to file", "Error writing to file")
 
 
-    def on_clicked_check(self):
+    def CheckEC(self):
         params = []
         log = []
         flag = False
@@ -134,7 +133,7 @@ class MyWindow(QtGui.QMainWindow):
             params.append(str(self.ui.lineEdit_4.text()))
             params.append(str(self.ui.lineEdit_5.text()))
             params.append(str(self.ui.lineEdit_6.text()))
-            EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, opts.GetOption('InputBase'))
+            EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, int(opts.GetOption('InputBase')))
             flag, log = EC.gosttest(opts.GetOption('OutputBase'))
         except(TypeError) as err:
             QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
@@ -167,7 +166,7 @@ class MyWindow(QtGui.QMainWindow):
             AtkinPath = opts.GetOption('AtkinPath')
 #        print(AtkinPath)
 
-        p_res, q_res = AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
+        p_res, q_res = atkin.AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
         if p_res == 0 and q_res == 0:
             QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P, Q are proven primes")
         elif p_res == 2 or q_res == 2:
@@ -192,7 +191,7 @@ class MyWindow(QtGui.QMainWindow):
         else:
             dialog.radioButton.setChecked(True)
         #    dialog.radioButton_2.setChecked(False)
-        QtCore.QObject.connect(dialog.toolButton,  QtCore.SIGNAL("clicked()"), dialog.GetAtkinName)
+        dialog.toolButton.clicked().connect( dialog.GetAtkinName)
         result = dialog.exec_()
         if result == QtGui.QDialog.Accepted:
             if dialog.checkBox.isChecked() == True:
