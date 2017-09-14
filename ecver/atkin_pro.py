@@ -21,12 +21,12 @@ class SingleAtkin(object):
 def AtkinTest(p, q, AtkinPath):
     th1 = SingleAtkin(p, AtkinPath)
     th2 = SingleAtkin(q, AtkinPath)
-    thread1 = mp.Process(target = th1)
-    thread2 = mp.Process(target = th2)
+    proc1 = mp.Process(target = th1)
+    proc2 = mp.Process(target = th2)
 
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
+    proc1.start()
+    proc2.start()
+    proc1.join()
+    proc2.join()
     return (th1.p_res, th2.p_res)
 
