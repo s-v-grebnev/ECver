@@ -26,7 +26,7 @@ class elliptic_curve:
     q = 0
     a = 0
     b = 0
-    P = [0,0]
+    P = [None,None]
     name = "No name"
 
     def getparams(self):
@@ -50,15 +50,15 @@ class elliptic_curve:
         self.P = [int(c[4], base = bs), int(c[5], base = bs)]
 
     def iszero(self, P):
-        return (P == [0, 0])
+        return (P == [None, None])
 
     def add(self, P, Q):
-        if P == [0, 0]:
+        if P == [None, None]:
             return Q
-        if Q == [0, 0]:
+        if Q == [None, None]:
             return P
-        if (P[1] + Q[1]) % self.p == 0:
-            return [0, 0]
+        if (P[1] + Q[1]) % self.p == 0: # and (P[0] - Q[0]) % self.p == 0:
+            return [None, None]
         if P == Q:
             l = ((3 * (P[0] ** 2) + self.a) * (modinv(2 * P[1], self.p))) % self.p
         else:
@@ -68,7 +68,7 @@ class elliptic_curve:
         return [x3, y3]
 
     def mul(self, k, P):
-        Y = [0, 0]
+        Y = [None, None]
         Z = P
         while k > 0:
             if k % 2 == 1:
