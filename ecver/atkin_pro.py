@@ -1,3 +1,7 @@
+"""
+This module implements interface to call the external ECPP program via multiprocesses
+"""
+
 import multiprocessing as mp
 import subprocess as sp
 

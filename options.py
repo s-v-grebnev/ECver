@@ -1,5 +1,6 @@
-import os
-
+"""
+This module implements options storage for the Mighty EC Verifier
+"""
 class Options(object):
     opts = {}
     def __init__(self):

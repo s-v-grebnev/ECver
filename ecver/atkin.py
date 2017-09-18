@@ -1,3 +1,8 @@
+"""
+This module implements interface to call the external ECPP program as threads.
+Actually this is not used -- deprecated by more efficient atkin_pro.
+"""
+
 import threading
 import subprocess as sp
 
