@@ -135,11 +135,8 @@ class MyWindow(QtGui.QMainWindow):
             params.append(str(self.ui.lineEdit_6.text()))
             EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, int(opts.GetOption('InputBase')))
             flag, log = EC.gosttest(opts.GetOption('OutputBase'))
-        except(TypeError) as err:
+        except(TypeError, ValueError) as err:
             QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
-            self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
-        except(ValueError) as err:
-            QtGui.QMessageBox.critical(self, "Invalid input", err.args[0] )
             self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
 
         for i in log:
@@ -191,7 +188,7 @@ class MyWindow(QtGui.QMainWindow):
         else:
             dialog.radioButton.setChecked(True)
         #    dialog.radioButton_2.setChecked(False)
-        dialog.toolButton.clicked().connect( dialog.GetAtkinName)
+        dialog.toolButton.clicked.connect( dialog.GetAtkinName)
         result = dialog.exec_()
         if result == QtGui.QDialog.Accepted:
             if dialog.checkBox.isChecked() == True:
