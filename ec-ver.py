@@ -11,7 +11,7 @@ import sys
 import mainwindow
 import options, optdialog
 import os
-from ecver import atkin_pro as atkin
+from ecver import atkin_pro, curves
 
 if __name__ == "__main__":
     opts = options.Options()
@@ -42,6 +42,8 @@ class MyWindow(QtGui.QMainWindow):
         self.ui.action_Options.triggered.connect(self.OptionsDialog)
         self.ui.checkBox.stateChanged.connect(self.SetInputBase)
         self.ui.checkBox.stateChanged.connect(self.SetInputBase)
+        self.ui.plainTextEdit.setReadOnly(True)
+        self.statusBar().showMessage('Ready')
 
         #        self.connect(self.ui.pushButton, QtCore.SIGNAL("clicked()"), self.CheckEC)
 #        self.connect(self.ui.actionLoad_Test_256, QtCore.SIGNAL("triggered()"), self.FillTest256)
@@ -62,21 +64,21 @@ class MyWindow(QtGui.QMainWindow):
 #    @QtCore.pyqtSlot()
 
     def FillTest256(self):
-        self.ui.lineEdit.setText(str("8000000000000000000000000000000000000000000000000000000000000431"))
-        self.ui.lineEdit_2.setText(str("8000000000000000000000000000000150FE8A1892976154C59CFC193ACCF5B3"))
-        self.ui.lineEdit_3.setText(str("0000000000000000000000000000000000000000000000000000000000000007"))
-        self.ui.lineEdit_4.setText(str("5FBFF498AA938CE739B8E022FBAFEF40563F6E6A3472FC2A514C0CE9DAE23B7E"))
-        self.ui.lineEdit_5.setText(str("0000000000000000000000000000000000000000000000000000000000000002"))
-        self.ui.lineEdit_6.setText(str("08E2A8A0E65147D4BD6316030E16D19C85C97F0A9CA267122B96ABBCEA7E8FC8"))
+        self.ui.lineEdit.setText(str(curves.Curves['GOSTR34102001-Test']['P']))
+        self.ui.lineEdit_2.setText(str(curves.Curves['GOSTR34102001-Test']['Q']))
+        self.ui.lineEdit_3.setText(str(curves.Curves['GOSTR34102001-Test']['A']))
+        self.ui.lineEdit_4.setText(str(curves.Curves['GOSTR34102001-Test']['B']))
+        self.ui.lineEdit_5.setText(str(curves.Curves['GOSTR34102001-Test']['X']))
+        self.ui.lineEdit_6.setText(str(curves.Curves['GOSTR34102001-Test']['Y']))
         self.ui.lineEdit_7.setText(str("GOSTR34102001-Test"))
 
     def FillTest512(self):
-        self.ui.lineEdit.setText(str("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDC7"))
-        self.ui.lineEdit_2.setText(str("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF27E69532F48D89116FF22B8D4E0560609B4B38ABFAD2B85DCACDB1411F10B275"))
-        self.ui.lineEdit_3.setText(str("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDC4"))
-        self.ui.lineEdit_4.setText(str("E8C2505DEDFC86DDC1BD0B2B6667F1DA34B82574761CB0E879BD081CFD0B6265EE3CB090F30D27614CB4574010DA90DD862EF9D4EBEE4761503190785A71C760"))
-        self.ui.lineEdit_5.setText(str("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003"))
-        self.ui.lineEdit_6.setText(str("7503CFE87A836AE3A61B8816E25450E6CE5E1C93ACF1ABC1778064FDCBEFA921DF1626BE4FD036E93D75E6A50E3A41E98028FE5FC235F5B889A589CB5215F2A4"))
+        self.ui.lineEdit.setText(str(curves.Curves['GOSTR34102012-Test']['P']))
+        self.ui.lineEdit_2.setText(str(curves.Curves['GOSTR34102012-Test']['Q']))
+        self.ui.lineEdit_3.setText(str(curves.Curves['GOSTR34102012-Test']['A']))
+        self.ui.lineEdit_4.setText(str(curves.Curves['GOSTR34102012-Test']['B']))
+        self.ui.lineEdit_5.setText(str(curves.Curves['GOSTR34102012-Test']['X']))
+        self.ui.lineEdit_6.setText(str(curves.Curves['GOSTR34102012-Test']['Y']))      
         self.ui.lineEdit_7.setText(str("GOSTR34102012-Test"))
 
     def ClickedClearOutput(self):
@@ -97,7 +99,6 @@ class MyWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.information(self, "Self-test passed", "Self-test passed")
         else:
             QtGui.QMessageBox.critical(self, "Self-test failed", "Self-test failed")
-
 
     def LoadFile(self):
         EC = ec.elliptic_curve()
@@ -120,7 +121,6 @@ class MyWindow(QtGui.QMainWindow):
         except:
             QtGui.QMessageBox.critical(self, "Error writing to file", "Error writing to file")
 
-
     def CheckEC(self):
         params = []
         log = []
@@ -137,10 +137,13 @@ class MyWindow(QtGui.QMainWindow):
             flag, log = EC.gosttest(opts.GetOption('OutputBase'))
         except(TypeError, ValueError) as err:
             QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
-            self.ui.plainTextEdit.insertPlainText("Invalid input; please check\n")
-
+            self.ui.plainTextEdit.setReadOnly(False)
+            self.ui.plainTextEdit.appendPlainText("Invalid input; please check")
+            self.ui.plainTextEdit.setReadOnly(True)
+        self.ui.plainTextEdit.setReadOnly(False)
         for i in log:
-            self.ui.plainTextEdit.insertPlainText(i + '\n')
+            self.ui.plainTextEdit.appendPlainText(i)
+            self.ui.plainTextEdit.setReadOnly(True)
 #        print(flag)
         if flag == True:
             QtGui.QMessageBox.information(self, "Curve satisfies GOST R 34.10", "Curve satisfies GOST R 34.10")
@@ -157,20 +160,20 @@ class MyWindow(QtGui.QMainWindow):
 
     def Atkin(self):
         AtkinPath=''
+        self.statusBar().showMessage('Running ECPP test')
         if opts.GetOption('AtkinPath') == '':
             AtkinPath = QtGui.QFileDialog.getOpenFileName(caption = "Path to Atkin")
         else:
             AtkinPath = opts.GetOption('AtkinPath')
-#        print(AtkinPath)
 
-        p_res, q_res = atkin.AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
+        p_res, q_res = atkin_pro.AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
         if p_res == 0 and q_res == 0:
             QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P, Q are proven primes")
         elif p_res == 2 or q_res == 2:
             QtGui.QMessageBox.critical(self, "Atkin says!", "Atkin said: P or Q is composite")
         else:
             QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P ,Q are probably prime")
-
+        self.statusBar().showMessage('ECPP test complete' )
 
     def OptionsDialog(self):
 #        import optdialog
