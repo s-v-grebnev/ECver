@@ -222,6 +222,10 @@ class elliptic_curve:
         else:
             skey, digest, rnd = skey_512, digest_512, rnd_512
 
+        skey = skey % self.q
+        digest = digest % self.q
+        rnd = rnd % self.q
+
         Q = self.mul(skey, self.P)
 
         signature = self.sign(digest, rnd, skey)
