@@ -4,6 +4,6 @@
 
 This tiny tool provides interactive elliptic curves verification
 for conformance to the GOST R 34.10-2012 Digital Signature Standard. 
-It is written in Python 3 and uses PyQt4.
+It is written in Python 3 and uses PyQt5.
 
 ec-ver is licensed under the WTFPL.
