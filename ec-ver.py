@@ -6,7 +6,7 @@ scheme parameters, that is, elliptic curves
 """
 
 from ecver import ec as ec
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import mainwindow
 import options, optdialog
@@ -18,14 +18,14 @@ if __name__ == "__main__":
 
 class SuperUi_Options(optdialog.Ui_Options):
     def GetAtkinName(self):
-        f = QtGui.QFileDialog.getOpenFileName()
+        f = QtWidgets.QFileDialog.getOpenFileName()
         if not f == '':
             opts.SetOption("AtkinPath", f)
             self.lineEdit.setText(f)
 
-class MyWindow(QtGui.QMainWindow):
+class MyWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QtWidgets.QMainWindow.__init__(self, parent)
         self.ui = mainwindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(self.CheckEC)
@@ -96,19 +96,19 @@ class MyWindow(QtGui.QMainWindow):
         EC = ec.elliptic_curve()
         answer = EC.selftest()
         if answer == True:
-            QtGui.QMessageBox.information(self, "Self-test passed", "Self-test passed")
+            QtWidgets.QMessageBox.information(self, "Self-test passed", "Self-test passed")
         else:
-            QtGui.QMessageBox.critical(self, "Self-test failed", "Self-test failed")
+            QtWidgets.QMessageBox.critical(self, "Self-test failed", "Self-test failed")
 
     def LoadFile(self):
         EC = ec.elliptic_curve()
-        f = QtGui.QFileDialog.getOpenFileName()
+        f = QtWidgets.QFileDialog.getOpenFileName()
         EC.loadfromfile(f)
         self.sync_ec(EC)
         self.ui.plainTextEdit.clear()
         
     def SaveFile(self):
-        f = QtGui.QFileDialog.getSaveFileNameAndFilter(filter = 'All (*);;Text (*.txt)', initialFilter = 'Text (*.txt)')
+        f = QtWidgets.QFileDialog.getSaveFileNameAndFilter(filter = 'All (*);;Text (*.txt)', initialFilter = 'Text (*.txt)')
         try:
             with open(f[0], 'w') as fh:
                 fh.write('P=' + str(self.ui.lineEdit.text())+'\n')
@@ -119,7 +119,7 @@ class MyWindow(QtGui.QMainWindow):
                 fh.write('Y=' + str(self.ui.lineEdit_6.text())+'\n')
                 fh.write(self.ui.plainTextEdit.toPlainText())
         except:
-            QtGui.QMessageBox.critical(self, "Error writing to file", "Error writing to file")
+            QtWidgets.QMessageBox.critical(self, "Error writing to file", "Error writing to file")
 
     def CheckEC(self):
         params = []
@@ -136,7 +136,7 @@ class MyWindow(QtGui.QMainWindow):
             EC = ec.elliptic_curve(str(self.ui.lineEdit_7.text()), params, int(opts.GetOption('InputBase')))
             flag, log = EC.gosttest(opts.GetOption('OutputBase'))
         except(TypeError, ValueError) as err:
-            QtGui.QMessageBox.critical(self, "Invalid input", err.args[0])
+            QtWidgets.QMessageBox.critical(self, "Invalid input", err.args[0])
             self.ui.plainTextEdit.setReadOnly(False)
             self.ui.plainTextEdit.appendPlainText("Invalid input; please check")
             self.ui.plainTextEdit.setReadOnly(True)
@@ -146,7 +146,7 @@ class MyWindow(QtGui.QMainWindow):
             self.ui.plainTextEdit.setReadOnly(True)
 #        print(flag)
         if flag == True:
-            QtGui.QMessageBox.information(self, "Curve satisfies GOST R 34.10", "Curve satisfies GOST R 34.10")
+            QtWidgets.QMessageBox.information(self, "Curve satisfies GOST R 34.10", "Curve satisfies GOST R 34.10")
 
 
     def sync_ec(self, EC):
@@ -162,17 +162,17 @@ class MyWindow(QtGui.QMainWindow):
         AtkinPath=''
         self.statusBar().showMessage('Running ECPP test')
         if opts.GetOption('AtkinPath') == '':
-            AtkinPath = QtGui.QFileDialog.getOpenFileName(caption = "Path to Atkin")
+            AtkinPath = QtWidgets.QFileDialog.getOpenFileName(caption = "Path to Atkin")
         else:
             AtkinPath = opts.GetOption('AtkinPath')
 
         p_res, q_res = atkin_pro.AtkinTest(self.ui.lineEdit.text(), self.ui.lineEdit_2.text(), AtkinPath)
         if p_res == 0 and q_res == 0:
-            QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P, Q are proven primes")
+            QtWidgets.QMessageBox.information(self, "Atkin says!", "Atkin said: P, Q are proven primes")
         elif p_res == 2 or q_res == 2:
-            QtGui.QMessageBox.critical(self, "Atkin says!", "Atkin said: P or Q is composite")
+            QtWidgets.QMessageBox.critical(self, "Atkin says!", "Atkin said: P or Q is composite")
         else:
-            QtGui.QMessageBox.information(self, "Atkin says!", "Atkin said: P ,Q are probably prime")
+            QtWidgets.QMessageBox.information(self, "Atkin says!", "Atkin said: P ,Q are probably prime")
         self.statusBar().showMessage('ECPP test complete' )
 
     def OptionsDialog(self):
@@ -193,7 +193,7 @@ class MyWindow(QtGui.QMainWindow):
         #    dialog.radioButton_2.setChecked(False)
         dialog.toolButton.clicked.connect( dialog.GetAtkinName)
         result = dialog.exec_()
-        if result == QtGui.QDialog.Accepted:
+        if result == QtWidgets.QDialog.Accepted:
             if dialog.checkBox.isChecked() == True:
                 opts.SetOption('UseAtkin', 'True')
             if dialog.radioButton_2.isChecked() == True:
@@ -220,7 +220,7 @@ if __name__ == "__main__":
         opts.LoadOptions(os.getcwd() + '/ec-ver.rc')
     except:
         print('Failed to load options')
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = MyWindow()
     window.setWindowIcon(QtGui.QIcon('ec-ver.png'))
     app.setWindowIcon(QtGui.QIcon('ec-ver.png'))
